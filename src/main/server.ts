@@ -1,14 +1,22 @@
 import express from 'express';
 import userRoutes from '../infra/routes/userRoutes';
-// import { UserController } from '../infrastructure/controllers/UserController';
+import driverRoutes from '../infra/routes/driverRoutes';
+import AppDataSource from './data-source';
+import "reflect-metadata";
 
 const app = express();
-app.use(userRoutes)
-// const userController = new UserController();
-
-// app.get('/users/:id', userController.getUser.bind(userController));
-
 const PORT = process.env.PORT || 3333;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+
+AppDataSource.initialize()
+  .then(() => {
+    app.use(express.json());
+    app.use(driverRoutes)
+    app.use(userRoutes)
+
+    app.listen(PORT, () => {
+      console.log(`Servidor rodando na porta ${PORT}`);
+    });
+  })
+  .catch(error => {
+    console.error('Erro ao conectar ao banco de dados:', error);
+  });

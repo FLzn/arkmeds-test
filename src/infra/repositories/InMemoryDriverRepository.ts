@@ -1,13 +1,10 @@
-// import { UserRepository } from '../../domain/interfaces/UserRepository';
-// import { User } from '../../domain/entities/User';
+import { Driver } from '../../domain/entities/Driver';
+import { IDriverRepository } from '../../domain/interfaces/IDriverRepository';
 
-// export class InMemoryUserRepository implements UserRepository {
-//   private users: User[] = [
-//     new User('1', 'John Doe', 'john@example.com'),
-//     new User('2', 'Jane Doe', 'jane@example.com')
-//   ];
+export class InMemoryDriverRepository implements IDriverRepository {
+  private drivers: Driver[] = [];
 
-//   async findById(id: string): Promise<User | null> {
-//     return this.users.find(user => user.id === id) || null;
-//   }
-// }
+  async createDriver(driver: Driver): Promise<void> {
+    this.drivers.push(driver);
+  }
+}

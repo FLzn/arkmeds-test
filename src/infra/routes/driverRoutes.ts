@@ -1,9 +1,9 @@
-// import { Router } from 'express';
-// import { UserController } from '../controllers/UserController';
+import { Router } from 'express';
+import { DriverController } from '../controllers/DriverController';
 
-// const userController = new UserController();
-// const router = Router();
+const driverController = new DriverController();
+const router = Router();
 
-// router.get('/users', userController.getUser.bind(userController));
+router.post('/drivers', driverController.createDriver.bind(driverController));
 
-// export default router;
+export default router;
