@@ -1,6 +1,5 @@
 import { Driver } from '../../domain/entities/Driver';
 import { IDriverRepository } from '../../domain/interfaces/IDriverRepository';
-import { DriverEntity } from '../entities/DriverEntity';
 
 export class InMemoryDriverRepository implements IDriverRepository {
   private drivers: Driver[] = [];
@@ -10,10 +9,10 @@ export class InMemoryDriverRepository implements IDriverRepository {
   }
 
   async findAll(): Promise<any> {
-    
+    return this.drivers;
   }
 
   async findByCpf(cpf: string): Promise<any> {
-    
+    return this.drivers.find((el) => el.cpf === cpf);
   }
-}
+} // TODO: fazer os testes

@@ -16,9 +16,9 @@ export class DriverRepository implements IDriverRepository {
     await this.driverRepository.save(newDriver);
   }
 
-  async findAll(): Promise<any> {
-    const a = await this.driverRepository.find();
-    return a;
+  async findAll(): Promise<DriverEntity[]> {
+    const drivers = await this.driverRepository.find();
+    return drivers;
   }
 
   async findByCpf(cpf: string): Promise<DriverEntity | null> {
