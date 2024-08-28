@@ -3,18 +3,28 @@ import { CreateDriverUseCase } from '../../app/usecases/CreateDriverUseCase';
 import { DriverRepository } from '../repositories/DriverRepository';
 import AppDataSource from '../../main/data-source';
 import { GetDriversUseCase } from '../../app/usecases/GetDriversUseCase';
-import { DriverEntity } from '../entities/DriverEntity';
-// import { InMemoryDriverRepository } from '../repositories/InMemoryDriverRepository';
+import { InMemoryDriverRepository } from '../repositories/InMemoryDriverRepository';
+import { getDriverRepository } from '../factories/repositoryFactory';
+import { IDriverRepository } from '../../domain/interfaces/IDriverRepository';
+import { PeopleEntity } from '../entities/PeopleEntity';
+import { GetDriverByIdUseCase } from '../../app/usecases/GetDriverByIdUseCase.';
+import { UpdateDriverUseCase } from '../../app/usecases/UpdateDriverUseCase';
+import { DeleteDriverUseCase } from '../../app/usecases/DeleteDriverUseCase';
 
 export class DriverController {
   private createDriverUseCase: CreateDriverUseCase;
   private getDriversUseCase: GetDriversUseCase;
+  private getDriverByIdUseCase: GetDriverByIdUseCase;
+  private updateDriverUseCase: UpdateDriverUseCase;
+  private deleteDriverUseCase: DeleteDriverUseCase;
 
   constructor() {
-    // const driverRepository = new InMemoryDriverRepository();
-    const driverRepository = new DriverRepository(AppDataSource);
-    this.createDriverUseCase = new CreateDriverUseCase(driverRepository);
-    this.getDriversUseCase = new GetDriversUseCase(driverRepository);
+    const driverRepository = getDriverRepository();
+    this.createDriverUseCase = new CreateDriverUseCase(driverRepository as IDriverRepository);
+    this.getDriversUseCase = new GetDriversUseCase(driverRepository as IDriverRepository);
+    this.getDriverByIdUseCase = new GetDriverByIdUseCase(driverRepository as IDriverRepository);
+    this.updateDriverUseCase = new UpdateDriverUseCase(driverRepository as IDriverRepository);
+    this.deleteDriverUseCase = new DeleteDriverUseCase(driverRepository as IDriverRepository);
   }
 
   public async createDriver(req: Request, res: Response): Promise<void> {
@@ -28,10 +38,44 @@ export class DriverController {
 
   public async getAllDrivers(req: Request, res: Response): Promise<void> {
     try {
-      const drivers: DriverEntity[] = await this.getDriversUseCase.execute();
+      const drivers: PeopleEntity[] = await this.getDriversUseCase.execute();
       res.status(200).json(drivers);
     } catch (error: any) {
       res.status(400).json({ message: 'Erro ao trazer motoristas.', details: error.message });
+    }
+  }
+
+  public async getDriverById(req: Request, res: Response): Promise<void> {
+    const driverId = Number(req.params.id);
+
+    try {
+      const driver = await this.getDriverByIdUseCase.execute(driverId);
+
+      if (!driver) {
+        res.status(404).json({ message: 'Motorista não encontrado' });
+        return;
+      }
+      res.status(200).json(driver);
+    } catch (error: any) {
+      res.status(500).json({ message: 'Erro ao buscar o motorista', details: error.message });
+    }
+  }
+
+  public async updateDriver(req: Request, res: Response): Promise<void> {
+    try {
+      await this.updateDriverUseCase.execute(req.body, Number(req.params.id));
+      res.status(201).send({ message: 'Motorista cadastrado com sucesso!' });
+    } catch (error: any) {
+      res.status(500).json({ message: 'Erro ao atualizar o motorista', details: error.message });
+    }
+  }
+
+  public async deleteDriver(req: Request, res: Response): Promise<void> {
+    try {
+      await this.deleteDriverUseCase.execute(Number(req.params.id));
+      res.status(201).json({ message: 'Motorista deletado com sucesso!' })
+    } catch (error: any) {
+      res.status(500).json({ message: 'Erro ao deletar motorista.', details: error.message })
     }
   }
 }

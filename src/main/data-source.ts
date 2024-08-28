@@ -1,6 +1,7 @@
 import { DataSource } from 'typeorm';
 import dotenv from 'dotenv';
-import { DriverEntity } from '../infra/entities/DriverEntity';
+import { AddressEntity } from '../infra/entities/AddressEntity';
+import { PeopleEntity } from '../infra/entities/PeopleEntity';
 
 dotenv.config();
 
@@ -12,7 +13,8 @@ const AppDataSource = new DataSource({
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
   entities: [
-    DriverEntity
+    PeopleEntity,
+    AddressEntity,
   ],
   synchronize: true,
   logging: false,

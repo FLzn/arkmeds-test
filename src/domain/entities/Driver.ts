@@ -1,11 +1,5 @@
-export class Address {
-    constructor(
-        public zipCode: string,
-        public street: string,
-        public neighborhood: string,
-        public number: string
-    ) { }
-}
+import { RoleEnum } from "../enums/RoleEnum";
+import { Address } from "./Address";
 
 export class Driver {
     private readonly _id: number;
@@ -14,6 +8,7 @@ export class Driver {
     private readonly _age: number;
     private readonly _sex: string;
     private readonly _address: Address;
+    private readonly _role: RoleEnum;
 
     constructor(
         name: string,
@@ -21,6 +16,7 @@ export class Driver {
         age: number,
         sex: string,
         address: Address,
+        role: RoleEnum,
         id?: number
     ) {
         if (!this.isValidCPF(cpf)) {
@@ -38,7 +34,8 @@ export class Driver {
         this._cpf = cpf;
         this._age = age;
         this._sex = sex;
-        this._address = this.formatAddress(address);
+        this._address = Address.formatAddress(address);
+        this._role = role;
     }
 
     public get id(): number {
@@ -63,6 +60,10 @@ export class Driver {
 
     public get address(): Address {
         return { ...this._address };
+    }
+
+    public get role(): RoleEnum {
+        return this._role;
     }
 
     // public set id(id: number): void {
@@ -116,13 +117,4 @@ export class Driver {
     
         return true;
       }
-
-    private formatAddress(address: Address): Address {
-        return {
-            street: address.street.trim(),
-            neighborhood: address.neighborhood.trim(),
-            number: address.number.trim(),
-            zipCode: address.zipCode.trim(),
-        };
-    }
 }

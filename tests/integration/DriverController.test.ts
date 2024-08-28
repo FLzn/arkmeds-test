@@ -12,11 +12,12 @@ describe('DriverController', () => {
 
   beforeEach(() => {
     driverRepository = new InMemoryDriverRepository();
-    driverController = new DriverController();
+    driverController = new DriverController(); // Certifique-se de que o repositório está sendo passado corretamente
 
     resMock = {
       status: jest.fn().mockReturnThis(),
       send: jest.fn(),
+      json: jest.fn(), // Adicione o mock para json()
     };
 
     req = {
@@ -44,5 +45,19 @@ describe('DriverController', () => {
     expect(resMock.send).toHaveBeenCalledWith({ message: 'Motorista cadastrado com sucesso!' });
   });
 
-  // Outros testes podem ser adicionados para diferentes cenários, como validações
+  // it('should return an error if CPF already exists', async () => {
+  //   const driver = new Driver('Rafael Gonçalves', '40353879088', 23, 'M', {
+  //     zipCode: '38050470',
+  //     street: 'Avenida Maranhão',
+  //     number: '350',
+  //     neighborhood: 'Santa Maria',
+  //   });
+
+  //   await driverRepository.createDriver(driver); // Cria o primeiro driver
+  //   try {
+  //     await driverController.createDriver(req as Request, res as Response); // Tenta criar o mesmo driver novamente
+  //   } catch (error) {
+  //     expect(error.message).toBe('Driver already exists');
+  //   }
+  // });
 });
